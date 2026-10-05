@@ -29,6 +29,7 @@ Relatórios de mercado recorrentes consomem horas de analistas e são propensos 
 | `skills/relatorio-semanal/SKILL.md` | Skill: procedimento reutilizável com estrutura e checklist |
 | `src/agent.py` | Loop de tool use, subagentes com papéis separados, ciclo de revisão e correção |
 | `mcp_server.py` | Servidor MCP com ferramentas e recursos (contexto e skill) |
+| `conferir_relatorio.py` | Conferência independente: recalcula em pandas os números de um relatório |
 | `tests/` | Validação numérica independente e testes de segurança |
 
 ## Controles de qualidade e governança
@@ -57,6 +58,19 @@ python gerar_relatorio.py             # analista + revisor
 # 3. Testes
 python -m pytest -q
 ```
+
+## Exemplo com dados reais
+
+A pasta [`exemplos/`](exemplos/) traz uma execução com dados reais do Yahoo Finance e do Banco Central (preços até 02/10/2026):
+
+- [`relatorio_semanal_20261005_offline.md`](exemplos/relatorio_semanal_20261005_offline.md): relatório gerado pelo modo determinístico (`--offline`).
+- [`conferencia_independente.md`](exemplos/conferencia_independente.md): saída de `conferir_relatorio.py`, que recalcula com pandas, lendo o banco diretamente, os 25 números da tabela do relatório. Todos conferem.
+
+```bash
+python conferir_relatorio.py exemplos/relatorio_semanal_20261005_offline.md
+```
+
+**Estado da validação:** a ingestão, as ferramentas, o modo offline e a conferência independente foram executados com dados reais. O fluxo analista + revisor (`python gerar_relatorio.py`) está coberto por teste automatizado com cliente de API simulado, mas ainda não foi executado contra a API real; por isso não há, nesta pasta, relatório escrito pelo LLM nem arquivo de auditoria.
 
 ### Usar no Claude Desktop via MCP
 
